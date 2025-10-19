@@ -7,23 +7,25 @@
 
 **One-click deployment of n8n workflow automation platform on Amazon EKS with enterprise-grade security, multi-region support, and production-ready configuration. Perfect for DevOps teams looking to automate workflows at scale.**
 
+---
+
 ## Architecture Overview
 
 Deploying n8n on Amazon EKS provides scalability, automation, and high reliability for enterprise workflow operations.
 
 ### Overall Architecture
 
-**Amazon EKS**: Container orchestration platform that manages and scales n8n applications with high availability and security.
+**Amazon EKS** - Container orchestration platform that manages and scales n8n applications with high availability and security.
 
-**Amazon EC2 (Worker Nodes)**: Runs n8n and PostgreSQL pods in isolated environments with dedicated compute resources.
+**Amazon EC2 (Worker Nodes)** - Runs n8n and PostgreSQL pods in isolated environments with dedicated compute resources.
 
-**PostgreSQL**: Stores workflow data, credentials, and execution history with persistent storage and backup capabilities.
+**PostgreSQL** - Stores workflow data, credentials, and execution history with persistent storage and backup capabilities.
 
-**AWS Load Balancer Controller**: Provides n8n access endpoints via Network Load Balancer for high performance and low latency.
+**AWS Load Balancer Controller** - Provides n8n access endpoints via Network Load Balancer for high performance and low latency.
 
-**Amazon CloudWatch**: Collects logs and metrics for comprehensive monitoring, alerting, and performance optimization.
+**Amazon CloudWatch** - Collects logs and metrics for comprehensive monitoring, alerting, and performance optimization.
 
-**Amazon S3 (Optional)**: Stores automated backups and workflow exports for disaster recovery and compliance.
+**Amazon S3 (Optional)** - Stores automated backups and workflow exports for disaster recovery and compliance.
 
 ### Operational Flow
 
@@ -35,29 +37,26 @@ Internet → AWS NLB → EKS Service → n8n Pod → PostgreSQL Pod
                               S3 Backup (Optional)
 ```
 
-1. **User Access**: Users access n8n interface through Load Balancer URL or custom domain (HTTPS can be configured separately).
+1. **User Access** - Users access n8n interface through Load Balancer URL or custom domain (HTTPS can be configured separately).
 
-2. **Request Processing**: Requests are routed to n8n application pods within the dedicated n8n namespace.
+2. **Request Processing** - Requests are routed to n8n application pods within the dedicated n8n namespace.
 
-3. **Data Persistence**: Workflow runtime interacts with PostgreSQL for data storage and retrieval operations.
+3. **Data Persistence** - Workflow runtime interacts with PostgreSQL for data storage and retrieval operations.
 
-4. **Monitoring**: All metrics and logs are exported to CloudWatch for real-time monitoring and optimization.
+4. **Monitoring** - All metrics and logs are exported to CloudWatch for real-time monitoring and optimization.
 
-5. **Backup Operations**: Automated CronJob backups send data to S3 for disaster recovery (when configured).
+5. **Backup Operations** - Automated CronJob backups send data to S3 for disaster recovery (when configured).
 
 ### Architecture Benefits
 
-**Multi-Region Ready**: Easy expansion across multiple AWS regions with consistent deployment patterns.
+- **Multi-Region Ready** - Easy expansion across multiple AWS regions with consistent deployment patterns.
+- **Security by Design** - NetworkPolicy isolation, HTTPS encryption, and separate IAM roles for enhanced security.
+- **Observability** - Integrated metrics, logs, and events with CloudWatch for comprehensive monitoring.
+- **Scalability** - Supports horizontal pod autoscaling based on CPU/memory load with automatic resource management.
+- **High Availability** - Multi-AZ deployment with pod anti-affinity for fault tolerance and zero-downtime operations.
+- **Cost Optimization** - Resource quotas and limits prevent over-provisioning while maintaining performance.
 
-**Security by Design**: NetworkPolicy isolation, HTTPS encryption, and separate IAM roles for enhanced security.
-
-**Observability**: Integrated metrics, logs, and events with CloudWatch for comprehensive monitoring.
-
-**Scalability**: Supports horizontal pod autoscaling based on CPU/memory load with automatic resource management.
-
-**High Availability**: Multi-AZ deployment with pod anti-affinity for fault tolerance and zero-downtime operations.
-
-**Cost Optimization**: Resource quotas and limits prevent over-provisioning while maintaining performance.
+---
 
 ## What is n8n?
 
@@ -65,23 +64,25 @@ Internet → AWS NLB → EKS Service → n8n Pod → PostgreSQL Pod
 
 ### Key Features
 
-- **Visual Workflow Builder**: Drag-and-drop interface for creating complex automation workflows
-- **400+ Integrations**: Pre-built nodes for popular services (Slack, Gmail, AWS, GitHub, etc.)
-- **Code Flexibility**: Execute custom JavaScript, Python, or shell commands when needed
-- **Self-Hosted**: Full control over your data and workflows
-- **API-First**: RESTful API for programmatic workflow management
-- **Conditional Logic**: Advanced branching, loops, and error handling
-- **Scheduling**: Time-based triggers and cron job support
-- **Webhook Support**: HTTP endpoints for external service integration
+- **Visual Workflow Builder** - Drag-and-drop interface for creating complex automation workflows
+- **400+ Integrations** - Pre-built nodes for popular services (Slack, Gmail, AWS, GitHub, etc.)
+- **Code Flexibility** - Execute custom JavaScript, Python, or shell commands when needed
+- **Self-Hosted** - Full control over your data and workflows
+- **API-First** - RESTful API for programmatic workflow management
+- **Conditional Logic** - Advanced branching, loops, and error handling
+- **Scheduling** - Time-based triggers and cron job support
+- **Webhook Support** - HTTP endpoints for external service integration
 
 ### Use Cases
 
-- **Data Synchronization**: Sync data between CRM, databases, and spreadsheets
-- **Notification Systems**: Automated alerts via email, Slack, or SMS
-- **Content Management**: Automated social media posting and content distribution
-- **DevOps Automation**: CI/CD pipeline triggers and deployment notifications
-- **E-commerce**: Order processing, inventory management, and customer communications
-- **Marketing Automation**: Lead nurturing, email campaigns, and analytics reporting
+- **Data Synchronization** - Sync data between CRM, databases, and spreadsheets
+- **Notification Systems** - Automated alerts via email, Slack, or SMS
+- **Content Management** - Automated social media posting and content distribution
+- **DevOps Automation** - CI/CD pipeline triggers and deployment notifications
+- **E-commerce** - Order processing, inventory management, and customer communications
+- **Marketing Automation** - Lead nurturing, email campaigns, and analytics reporting
+
+---
 
 ## Project Structure
 
@@ -108,6 +109,8 @@ n8n/
 └── README.md
 ```
 
+---
+
 ## Quick Start
 
 ### Prerequisites
@@ -128,7 +131,7 @@ Before deploying n8n on EKS, ensure you have:
 
 ```bash
 # Clone this repository
-git clone <repository-url>
+git clone https://github.com/vanhoangkha/n8n-on-aws-eks.git
 cd n8n
 
 # Deploy to default region (us-east-1)
@@ -169,6 +172,8 @@ kubectl get service n8n-service-simple -n n8n
 
 *n8n owner account setup interface - Configure your admin credentials to get started*
 
+---
+
 ## Regional Deployment Examples
 
 ### North America
@@ -207,24 +212,26 @@ REGION=ap-southeast-1 ./scripts/deploy.sh
 REGION=ap-southeast-2 ./scripts/deploy.sh
 ```
 
+---
+
 ## Initial Setup & Configuration
 
 ### Step 1: Owner Account Setup
 
 When you first access n8n, you'll be prompted to create an owner account:
 
-1. **Email**: Your admin email address
-2. **First Name**: Your first name
-3. **Last Name**: Your last name  
-4. **Password**: Strong password (8+ characters, 1 number, 1 capital letter)
+1. **Email** - Your admin email address
+2. **First Name** - Your first name
+3. **Last Name** - Your last name  
+4. **Password** - Strong password (8+ characters, 1 number, 1 capital letter)
 
 ### Step 2: Workspace Configuration
 
 After account creation, configure your workspace:
 
-1. **Workspace Name**: Choose a descriptive name for your organization
-2. **Usage Plan**: Select based on your automation needs
-3. **Team Setup**: Invite team members (optional)
+1. **Workspace Name** - Choose a descriptive name for your organization
+2. **Usage Plan** - Select based on your automation needs
+3. **Team Setup** - Invite team members (optional)
 
 ### Step 3: First Workflow
 
@@ -260,6 +267,8 @@ kubectl patch deployment n8n-simple -n n8n -p '{"spec":{"template":{"spec":{"con
 # Update service to use custom domain and TLS
 ```
 
+---
+
 ## Configuration
 
 ### Database Configuration
@@ -287,6 +296,8 @@ kubectl patch deployment n8n-simple -n n8n -p '{"spec":{"template":{"spec":{"con
 | `DB_TYPE` | postgresdb | Database type |
 | `DB_POSTGRESDB_HOST` | postgres-service-simple.n8n.svc.cluster.local | Database host |
 | `DB_POSTGRESDB_DATABASE` | n8n | Database name |
+
+---
 
 ## Management Commands
 
@@ -335,6 +346,8 @@ kubectl exec deployment/postgres-simple -n n8n -- pg_dump -U n8nuser n8n > n8n-b
 kubectl exec -i deployment/postgres-simple -n n8n -- psql -U n8nuser -d n8n < n8n-backup.sql
 ```
 
+---
+
 ## Security & Best Practices
 
 ### Production Security Checklist
@@ -372,15 +385,17 @@ spec:
 EOF
 ```
 
+---
+
 ## Monitoring & Observability
 
 ### Health Checks
 
 The deployment includes comprehensive health monitoring:
 
-- **Liveness Probe**: HTTP GET `/healthz` every 30s
-- **Readiness Probe**: HTTP GET `/healthz` every 10s
-- **Startup Probe**: HTTP GET `/healthz` with 60s timeout
+- **Liveness Probe** - HTTP GET `/healthz` every 30s
+- **Readiness Probe** - HTTP GET `/healthz` every 10s
+- **Startup Probe** - HTTP GET `/healthz` with 60s timeout
 
 ### Metrics Collection
 
@@ -401,6 +416,8 @@ kubectl logs -f -l app=n8n-simple -n n8n
 # Export logs to file
 kubectl logs deployment/n8n-simple -n n8n > n8n-logs-$(date +%Y%m%d).log
 ```
+
+---
 
 ## Troubleshooting
 
@@ -444,6 +461,8 @@ kubectl patch deployment n8n-simple -n n8n -p '{"spec":{"template":{"spec":{"con
 kubectl autoscale deployment n8n-simple --cpu-percent=70 --min=2 --max=10 -n n8n
 ```
 
+---
+
 ## Cleanup
 
 ### Remove n8n Application Only
@@ -465,58 +484,16 @@ eksctl delete cluster --region=$REGION --name=$CLUSTER_NAME --profile=$AWS_PROFI
 aws cloudformation list-stacks --region=$REGION --profile=$AWS_PROFILE
 ```
 
-## Backup & Recovery
-
-### Automated Backup Strategy
-
-```bash
-# Create backup CronJob
-kubectl apply -f - <<EOF
-apiVersion: batch/v1
-kind: CronJob
-metadata:
-  name: n8n-backup
-  namespace: n8n
-spec:
-  schedule: "0 2 * * *"  # Daily at 2 AM
-  jobTemplate:
-    spec:
-      template:
-        spec:
-          containers:
-          - name: backup
-            image: postgres:15-alpine
-            command:
-            - /bin/bash
-            - -c
-            - |
-              pg_dump -h postgres-service-simple -U n8nuser n8n > /backup/n8n-\$(date +%Y%m%d-%H%M%S).sql
-              # Upload to S3 (optional)
-              # aws s3 cp /backup/n8n-\$(date +%Y%m%d-%H%M%S).sql s3://your-backup-bucket/
-            env:
-            - name: PGPASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: postgres-secret
-                  key: password
-            volumeMounts:
-            - name: backup-storage
-              mountPath: /backup
-          volumes:
-          - name: backup-storage
-            emptyDir: {}
-          restartPolicy: OnFailure
-EOF
-```
+---
 
 ## Production Considerations
 
 ### Scaling Recommendations
 
-- **Horizontal Scaling**: Use HPA for automatic pod scaling based on CPU/memory
-- **Vertical Scaling**: Increase resource limits for CPU-intensive workflows
-- **Database Scaling**: Consider managed RDS PostgreSQL for production workloads
-- **Storage**: Implement persistent volumes with EBS for data durability
+- **Horizontal Scaling** - Use HPA for automatic pod scaling based on CPU/memory
+- **Vertical Scaling** - Increase resource limits for CPU-intensive workflows
+- **Database Scaling** - Consider managed RDS PostgreSQL for production workloads
+- **Storage** - Implement persistent volumes with EBS for data durability
 
 ### High Availability Setup
 
@@ -524,6 +501,8 @@ EOF
 # Multi-AZ deployment with pod anti-affinity
 kubectl patch deployment n8n-simple -n n8n -p '{"spec":{"template":{"spec":{"affinity":{"podAntiAffinity":{"preferredDuringSchedulingIgnoredDuringExecution":[{"weight":100,"podAffinityTerm":{"labelSelector":{"matchExpressions":[{"key":"app","operator":"In","values":["n8n-simple"]}]},"topologyKey":"kubernetes.io/hostname"}}]}}}}}}'
 ```
+
+---
 
 ## Useful Resources
 
@@ -542,6 +521,8 @@ kubectl patch deployment n8n-simple -n n8n -p '{"spec":{"template":{"spec":{"aff
 - [EKS Best Practices Guide](https://aws.github.io/aws-eks-best-practices/)
 - [AWS Load Balancer Controller](https://kubernetes-sigs.github.io/aws-load-balancer-controller/)
 
+---
+
 ## Contributing
 
 1. Fork the repository
@@ -550,9 +531,13 @@ kubectl patch deployment n8n-simple -n n8n -p '{"spec":{"template":{"spec":{"aff
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
+---
+
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---
 
 ## Version Information
 
