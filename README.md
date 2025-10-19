@@ -1,4 +1,4 @@
-# 🚀 Deploy n8n Workflow Automation on AWS EKS - Production Ready in Any Region
+# Deploy n8n Workflow Automation on AWS EKS - Production Ready in Any Region
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![AWS EKS](https://img.shields.io/badge/AWS-EKS-orange.svg)](https://aws.amazon.com/eks/)
@@ -19,7 +19,7 @@ Deploying n8n on Amazon EKS provides scalability, automation, and high reliabili
 
 **PostgreSQL**: Stores workflow data, credentials, and execution history with persistent storage and backup capabilities.
 
-**AWS Load Balancer Controller**: Provides secure n8n access endpoints via HTTPS/TLS with automatic SSL termination.
+**AWS Load Balancer Controller**: Provides n8n access endpoints via Network Load Balancer for high performance and low latency.
 
 **Amazon CloudWatch**: Collects logs and metrics for comprehensive monitoring, alerting, and performance optimization.
 
@@ -35,7 +35,7 @@ Internet → AWS NLB → EKS Service → n8n Pod → PostgreSQL Pod
                               S3 Backup (Optional)
 ```
 
-1. **User Access**: Users access n8n interface through Load Balancer URL or custom domain with SSL/TLS encryption.
+1. **User Access**: Users access n8n interface through Load Balancer URL or custom domain (HTTPS can be configured separately).
 
 2. **Request Processing**: Requests are routed to n8n application pods within the dedicated n8n namespace.
 
