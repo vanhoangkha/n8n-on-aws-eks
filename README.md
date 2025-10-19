@@ -7,6 +7,58 @@
 
 **One-click deployment of n8n workflow automation platform on Amazon EKS with enterprise-grade security, multi-region support, and production-ready configuration. Perfect for DevOps teams looking to automate workflows at scale.**
 
+## Architecture Overview
+
+Deploying n8n on Amazon EKS provides scalability, automation, and high reliability for enterprise workflow operations.
+
+### Overall Architecture
+
+**Amazon EKS**: Container orchestration platform that manages and scales n8n applications with high availability and security.
+
+**Amazon EC2 (Worker Nodes)**: Runs n8n and PostgreSQL pods in isolated environments with dedicated compute resources.
+
+**PostgreSQL**: Stores workflow data, credentials, and execution history with persistent storage and backup capabilities.
+
+**AWS Load Balancer Controller**: Provides secure n8n access endpoints via HTTPS/TLS with automatic SSL termination.
+
+**Amazon CloudWatch**: Collects logs and metrics for comprehensive monitoring, alerting, and performance optimization.
+
+**Amazon S3 (Optional)**: Stores automated backups and workflow exports for disaster recovery and compliance.
+
+### Operational Flow
+
+```
+Internet → AWS NLB → EKS Service → n8n Pod → PostgreSQL Pod
+                                      ↓
+                              CloudWatch Logs/Metrics
+                                      ↓
+                              S3 Backup (Optional)
+```
+
+1. **User Access**: Users access n8n interface through Load Balancer URL or custom domain with SSL/TLS encryption.
+
+2. **Request Processing**: Requests are routed to n8n application pods within the dedicated n8n namespace.
+
+3. **Data Persistence**: Workflow runtime interacts with PostgreSQL for data storage and retrieval operations.
+
+4. **Monitoring**: All metrics and logs are exported to CloudWatch for real-time monitoring and optimization.
+
+5. **Backup Operations**: Automated CronJob backups send data to S3 for disaster recovery (when configured).
+
+### Architecture Benefits
+
+**Multi-Region Ready**: Easy expansion across multiple AWS regions with consistent deployment patterns.
+
+**Security by Design**: NetworkPolicy isolation, HTTPS encryption, and separate IAM roles for enhanced security.
+
+**Observability**: Integrated metrics, logs, and events with CloudWatch for comprehensive monitoring.
+
+**Scalability**: Supports horizontal pod autoscaling based on CPU/memory load with automatic resource management.
+
+**High Availability**: Multi-AZ deployment with pod anti-affinity for fault tolerance and zero-downtime operations.
+
+**Cost Optimization**: Resource quotas and limits prevent over-provisioning while maintaining performance.
+
 ## What is n8n?
 
 **n8n** (pronounced "n-eight-n") is a powerful, open-source workflow automation tool that enables you to connect different services and automate repetitive tasks without writing code. It's designed for technical and non-technical users alike.
