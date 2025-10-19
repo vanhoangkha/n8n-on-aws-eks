@@ -75,12 +75,25 @@ Internet → AWS NLB → EKS Service → n8n Pod → PostgreSQL Pod
 
 ### Use Cases
 
-- **Data Synchronization** - Sync data between CRM, databases, and spreadsheets
-- **Notification Systems** - Automated alerts via email, Slack, or SMS
-- **Content Management** - Automated social media posting and content distribution
-- **DevOps Automation** - CI/CD pipeline triggers and deployment notifications
-- **E-commerce** - Order processing, inventory management, and customer communications
-- **Marketing Automation** - Lead nurturing, email campaigns, and analytics reporting
+**IT Ops can**
+⚡ On-board new employees
+
+![IT Ops Employee Onboarding](images/it-ops-onboarding.png)
+
+**Sec Ops can**
+⚡ Enrich security incident tickets
+
+![Security Operations Incident Enrichment](images/sec-ops-incident-enrichment.png)
+
+**Dev Ops can**
+⚡ Convert natural language into API calls
+
+![DevOps Natural Language to API](images/dev-ops-natural-language-api.png)
+
+**Sales can**
+⚡ Generate customer insights from reviews
+
+![Sales Customer Insights](images/sales-customer-insights.png)
 
 ---
 
