@@ -1,0 +1,24 @@
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: n8n-cluster
+  region: us-east-1  # Default region, override with REGION env var
+
+nodeGroups:
+  - name: n8n-workers
+    instanceType: t3.medium
+    desiredCapacity: 2
+    minSize: 1
+    maxSize: 4
+    ssh:
+      allow: false
+    iam:
+      withAddonPolicies:
+        ebs: true
+        cloudWatch: true
+
+# Disable NAT gateway to avoid EIP limits
+vpc:
+  nat:
+    gateway: Disable
