@@ -432,6 +432,120 @@ kubectl logs deployment/n8n-simple -n n8n > n8n-logs-$(date +%Y%m%d).log
 
 ---
 
+## Cost Calculation
+
+### Monthly Cost Breakdown by Region
+
+#### US East (us-east-1) - Lowest Cost
+| Component | Standard | Cost-Optimized |
+|-----------|----------|----------------|
+| EKS Control Plane | $73.00 | $73.00 |
+| EC2 (t3.medium × 2) | $58.40 | - |
+| EC2 (t3.small × 1 Spot) | - | $8.76 |
+| Network Load Balancer | $16.43 | $16.43 |
+| EBS Storage (60GB) | $6.00 | $1.60 |
+| **Total** | **~$154/month** | **~$100/month** |
+
+#### Singapore (ap-southeast-1) - Regional Pricing
+| Component | Standard | Cost-Optimized |
+|-----------|----------|----------------|
+| EKS Control Plane | $73.00 | $73.00 |
+| EC2 (t3.medium × 2) | $67.68 | - |
+| EC2 (t3.small × 1 Spot) | - | $10.14 |
+| Network Load Balancer | $18.40 | $18.40 |
+| EBS Storage (60GB) | $4.80 | $2.40 |
+| **Total** | **~$164/month** | **~$104/month** |
+
+#### Europe (eu-west-1) - Frankfurt
+| Component | Standard | Cost-Optimized |
+|-----------|----------|----------------|
+| EKS Control Plane | $73.00 | $73.00 |
+| EC2 (t3.medium × 2) | $61.32 | - |
+| EC2 (t3.small × 1 Spot) | - | $9.20 |
+| Network Load Balancer | $18.25 | $18.25 |
+| EBS Storage (60GB) | $5.40 | $1.80 |
+| **Total** | **~$158/month** | **~$102/month** |
+
+### Cost Optimization Strategies
+
+#### 1. Ultra Cost-Optimized Deployment
+```bash
+# Deploy with minimal resources and spot instances
+./scripts/deploy-cost-optimized.sh
+```
+- **Single t3.small spot instance**: 70% savings on compute
+- **Minimal resource allocation**: Reduced CPU/memory requests
+- **Estimated cost**: $100-110/month globally
+
+#### 2. Scheduled Scaling (Additional 40% savings)
+```bash
+# Scale down during off-hours (nights/weekends)
+kubectl scale deployment n8n-simple --replicas=0 -n n8n
+kubectl scale deployment postgres-simple --replicas=0 -n n8n
+
+# Scale up during business hours
+kubectl scale deployment n8n-simple --replicas=1 -n n8n
+kubectl scale deployment postgres-simple --replicas=1 -n n8n
+```
+- **Potential monthly cost**: $60-75/month
+
+#### 3. Reserved Instances (1-3 year commitment)
+- **1-year commitment**: 30-40% savings on EC2
+- **3-year commitment**: 50-60% savings on EC2
+
+#### 4. Alternative Architectures
+
+**Fargate Option** (Serverless)
+- No EC2 management required
+- Pay per vCPU/GB-hour used
+- Estimated: $80-120/month for light usage
+
+**ECS on EC2** (Lower cost alternative)
+- No EKS control plane fee ($73 savings)
+- Estimated: $50-80/month with spot instances
+
+### Regional Cost Comparison
+
+| Region | Standard Setup | Cost-Optimized | Savings |
+|--------|----------------|----------------|---------|
+| us-east-1 | $154/month | $100/month | 35% |
+| us-west-2 | $162/month | $105/month | 35% |
+| eu-west-1 | $158/month | $102/month | 35% |
+| ap-southeast-1 | $164/month | $104/month | 37% |
+| ap-northeast-1 | $168/month | $108/month | 36% |
+
+### Cost Monitoring Commands
+
+```bash
+# Check current resource usage
+kubectl top pods -n n8n
+kubectl top nodes
+
+# Monitor costs with AWS CLI
+aws ce get-cost-and-usage --time-period Start=2024-01-01,End=2024-01-31 \
+  --granularity MONTHLY --metrics BlendedCost \
+  --group-by Type=DIMENSION,Key=SERVICE
+
+# Set up billing alerts
+aws budgets create-budget --account-id YOUR_ACCOUNT_ID \
+  --budget BudgetName=n8n-monthly,BudgetLimit=Amount=150,Unit=USD
+```
+
+### Production vs Development Costs
+
+**Development Environment**
+- Single node with spot instances
+- Scheduled scaling (8 hours/day)
+- **Estimated**: $30-50/month
+
+**Production Environment**
+- Multi-AZ with 3 nodes
+- Reserved instances
+- Managed RDS PostgreSQL
+- **Estimated**: $200-300/month
+
+---
+
 ## Troubleshooting
 
 ### Common Issues
