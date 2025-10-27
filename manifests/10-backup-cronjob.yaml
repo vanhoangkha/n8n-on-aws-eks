@@ -1,0 +1,75 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: postgres-backup
+  namespace: n8n
+spec:
+  schedule: "0 2 * * *"  # Daily at 2 AM UTC
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: postgres-backup
+            image: postgres:15-alpine
+            command:
+            - /bin/sh
+            - -c
+            - |
+              set -e
+              echo "Starting backup at $(date)"
+              BACKUP_FILE="/backup/n8n-backup-$(date +%Y%m%d-%H%M%S).sql"
+              PGPASSWORD=${POSTGRES_PASSWORD} pg_dump -h ${POSTGRES_HOST} -U ${POSTGRES_USER} -d ${POSTGRES_DB} > ${BACKUP_FILE}
+              gzip ${BACKUP_FILE}
+              echo "Backup completed: ${BACKUP_FILE}.gz"
+              
+              # Optional: Upload to S3 (uncomment and configure)
+              # aws s3 cp ${BACKUP_FILE}.gz s3://${S3_BUCKET}/backups/
+              
+              # Cleanup old backups (keep last 7 days)
+              find /backup -name "n8n-backup-*.sql.gz" -mtime +7 -delete
+              echo "Old backups cleaned up"
+            env:
+            - name: POSTGRES_HOST
+              value: postgres-service-simple
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: POSTGRES_USER
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: POSTGRES_PASSWORD
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: POSTGRES_DB
+            - name: S3_BUCKET
+              value: "your-s3-bucket-name"  # Configure this
+            volumeMounts:
+            - name: backup-storage
+              mountPath: /backup
+          volumes:
+          - name: backup-storage
+            persistentVolumeClaim:
+              claimName: postgres-backup-pvc
+          restartPolicy: OnFailure
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: postgres-backup-pvc
+  namespace: n8n
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: gp3
+  resources:
+    requests:
+      storage: 50Gi
+

@@ -1,0 +1,21 @@
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: n8n-cluster
+  region: ap-southeast-1
+
+nodeGroups:
+  - name: cost-optimized-nodes
+    instanceType: t3.small
+    minSize: 1
+    maxSize: 2
+    desiredCapacity: 1
+    spot: true
+    volumeSize: 20
+    ssh:
+      allow: false
+    iam:
+      withAddonPolicies:
+        autoScaler: true
+        cloudWatch: true
