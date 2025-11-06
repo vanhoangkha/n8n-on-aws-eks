@@ -7,6 +7,26 @@
 
 **One-click deployment of n8n workflow automation platform on Amazon EKS with enterprise-grade security, multi-region support, and production-ready configuration. Perfect for DevOps teams looking to automate workflows at scale.**
 
+## What's New in v2.0
+
+**Major Code Quality Improvements:**
+- All scripts now include comprehensive error handling and validation
+- New shared functions library (`common.sh`) for consistency
+- Prerequisites checking (aws, kubectl, eksctl) before operations
+- AWS credentials and region validation
+- Color-coded output for better visibility
+- Help documentation for all scripts (`--help` flag)
+- Security improvements: credentials retrieved from Kubernetes secrets
+
+**Enhanced Scripts:**
+- **Backup**: Retention policy, automatic cleanup, backup validation
+- **Restore**: Pre-restore safety backup, rollback on failure
+- **Monitor**: Watch mode for continuous monitoring
+- **Logs**: Follow mode, multi-service support, configurable output
+- **Cleanup**: Namespace-only mode, orphaned resource detection
+- **Deploy**: Full validation pipeline, manifest verification
+- **Cost-Optimized**: Secure credential handling, auto-config generation
+
 ---
 
 ## Architecture Overview
@@ -100,26 +120,86 @@ Internet → AWS NLB → EKS Service → n8n Pod → PostgreSQL Pod
 ## Project Structure
 
 ```
-n8n/
+n8n-on-aws-eks/
 ├── infrastructure/
-│   └── cluster-config.yaml      # EKS cluster configuration template
-├── manifests/                   # Kubernetes manifests
-│   ├── 00-namespace.yaml        # Namespace & resource quotas
-│   ├── 01-postgres-secret.yaml  # Database credentials
-│   ├── 03-postgres-deployment.yaml
-│   ├── 04-postgres-service.yaml
-│   ├── 06-n8n-deployment.yaml
-│   └── 07-n8n-service.yaml
+│   ├── cluster-config.yaml              # EKS cluster configuration template
+│   └── cost-optimized-cluster.yaml      # Cost-optimized cluster config (auto-generated)
+├── manifests/                            # Kubernetes manifests
+│   ├── 00-namespace.yaml                 # Namespace & resource quotas
+│   ├── 01-postgres-secret.yaml           # Database credentials
+│   ├── 02-persistent-volumes.yaml        # PVC definitions
+│   ├── 03-postgres-deployment.yaml       # PostgreSQL deployment
+│   ├── 04-postgres-service.yaml          # PostgreSQL service
+│   ├── 05-network-policy.yaml            # Network security policies
+│   ├── 06-n8n-deployment.yaml            # n8n application deployment
+│   ├── 07-n8n-service.yaml               # n8n LoadBalancer service
+│   ├── 08-hpa.yaml                       # Horizontal Pod Autoscaler
+│   ├── 09-ingress.yaml                   # Ingress configuration
+│   ├── 10-backup-cronjob.yaml            # Automated backup jobs
+│   └── 11-restore-job.yaml               # Restore job template
 ├── scripts/
-│   ├── deploy.sh               # Multi-region deployment
-│   ├── monitor.sh              # Status monitoring
-│   └── cleanup.sh              # Resource cleanup
-├── images/
-│   ├── n8n-setup.png          # Setup interface screenshot
-│   ├── n8n-workflow.png       # Workflow builder interface
-│   └── n8n-workflow-example.png # Advanced workflow example
-├── LICENSE                     # MIT License
-└── README.md
+│   ├── common.sh                         # Shared functions library
+│   ├── deploy.sh                         # Production deployment with validation
+│   ├── deploy-cost-optimized.sh          # Cost-optimized deployment (spot instances)
+│   ├── monitor.sh                        # Real-time monitoring dashboard
+│   ├── backup.sh                         # Database backup with retention
+│   ├── restore.sh                        # Database restore with pre-backup
+│   ├── get-logs.sh                       # Log retrieval with follow mode
+│   └── cleanup.sh                        # Resource cleanup (namespace/full)
+├── backups/                              # Backup storage directory (auto-created)
+├── images/                               # Documentation screenshots
+│   ├── n8n-setup.png                     # Setup interface
+│   ├── n8n-workflow.png                  # Workflow builder
+│   ├── n8n-workflow-example.png          # Advanced workflow example
+│   ├── it-ops-onboarding.png             # IT ops use case
+│   ├── sec-ops-incident-enrichment.png   # Security ops use case
+│   ├── dev-ops-natural-language-api.png  # DevOps use case
+│   └── sales-customer-insights.png       # Sales use case
+├── LICENSE                               # MIT License
+└── README.md                             # This file
+```
+
+---
+
+## Scripts Overview
+
+All scripts have been enhanced with enterprise-grade features including comprehensive validation, error handling, and help documentation.
+
+### Core Features (New in v2.0)
+
+- **Strict Mode**: All scripts use `set -euo pipefail` for safer execution
+- **Prerequisites Validation**: Automatic checking for required commands (aws, kubectl, eksctl)
+- **AWS Validation**: Credentials and region verification before operations
+- **Help Documentation**: Every script supports `--help` flag with examples
+- **Shared Library**: Common functions in `scripts/common.sh` for consistency
+- **Color-Coded Output**: Clear visual feedback (info, success, warning, error)
+- **Secure Credentials**: Database credentials retrieved from Kubernetes secrets
+
+### Script Descriptions
+
+| Script | Purpose | Key Features |
+|--------|---------|--------------|
+| **deploy.sh** | Production EKS deployment | Prerequisites check, region validation, manifest verification |
+| **deploy-cost-optimized.sh** | Cost-optimized deployment | Spot instances, minimal resources, auto-config generation |
+| **monitor.sh** | Status monitoring | Watch mode, real-time updates, resource usage tracking |
+| **backup.sh** | Database backup | Retention policy, automatic cleanup, backup validation |
+| **restore.sh** | Database restore | Pre-restore backup, safety checks, rollback on failure |
+| **get-logs.sh** | Log retrieval | Follow mode, multi-service support, configurable output |
+| **cleanup.sh** | Resource cleanup | Namespace-only mode, orphaned resource detection |
+| **common.sh** | Shared library | Logging, validation, error handling functions |
+
+### Quick Help
+
+All scripts support the `--help` flag for detailed usage information:
+
+```bash
+./scripts/deploy.sh --help
+./scripts/backup.sh --help
+./scripts/restore.sh --help
+./scripts/get-logs.sh --help
+./scripts/monitor.sh --help
+./scripts/cleanup.sh --help
+./scripts/deploy-cost-optimized.sh --help
 ```
 
 ---
@@ -142,12 +222,17 @@ Before deploying n8n on EKS, ensure you have:
 
 ### 1. Deploy to Any Region
 
+All scripts now include comprehensive validation, error handling, and help messages.
+
 ```bash
 # Clone this repository
 git clone https://github.com/vanhoangkha/n8n-on-aws-eks.git
-cd n8n
+cd n8n-on-aws-eks
 
-# Deploy to default region (us-east-1)
+# View deployment options
+./scripts/deploy.sh --help
+
+# Deploy to default region (us-east-1) - with automatic validation
 ./scripts/deploy.sh
 
 # Deploy to specific region
@@ -163,22 +248,43 @@ AWS_PROFILE=myprofile REGION=ap-southeast-1 ./scripts/deploy.sh
 CLUSTER_NAME=production-n8n REGION=us-west-2 AWS_PROFILE=devops ./scripts/deploy.sh
 ```
 
+**New in v2.0:**
+- Automatic prerequisite checking (aws, kubectl, eksctl)
+- AWS credentials and region validation
+- Cluster existence verification
+- Manifest file validation before deployment
+- Better error messages and logging
+
 ### 2. Monitor Deployment Status
 
 ```bash
-# Check deployment progress
+# One-time status check
 ./scripts/monitor.sh
 
-# Manual status check
-kubectl get pods -n n8n
-kubectl get services -n n8n
+# Continuous monitoring (refreshes every 5 seconds)
+./scripts/monitor.sh --watch
+
+# Custom refresh interval (every 10 seconds)
+./scripts/monitor.sh -w -i 10
+
+# View help
+./scripts/monitor.sh --help
 ```
+
+**Features:**
+- Real-time pod status and resource usage
+- Service endpoints and LoadBalancer URLs
+- Recent events and alerts
+- Quick command reference
 
 ### 3. Access n8n
 
 ```bash
-# Get LoadBalancer URL
+# Get LoadBalancer URL (shown in deployment output)
 kubectl get service n8n-service-simple -n n8n
+
+# Or use monitor script for full status
+./scripts/monitor.sh
 ```
 
 ![n8n Setup Interface](images/n8n-setup.png)
@@ -314,6 +420,65 @@ kubectl patch deployment n8n-simple -n n8n -p '{"spec":{"template":{"spec":{"con
 
 ## Management Commands
 
+### Monitoring and Logs
+
+```bash
+# Real-time monitoring dashboard
+./scripts/monitor.sh
+
+# Continuous monitoring (auto-refresh)
+./scripts/monitor.sh --watch
+
+# View n8n logs (last 100 lines)
+./scripts/get-logs.sh n8n
+
+# Follow n8n logs in real-time
+./scripts/get-logs.sh n8n --follow
+
+# View PostgreSQL logs
+./scripts/get-logs.sh postgres -n 50
+
+# View all service logs
+./scripts/get-logs.sh all --lines 200
+```
+
+**Log Script Features:**
+- Follow mode for real-time log streaming
+- Support for n8n, postgres, or all services
+- Configurable line count
+- All-pods mode for multi-replica deployments
+
+### Database Backup and Restore
+
+```bash
+# Create database backup (with automatic retention)
+./scripts/backup.sh
+
+# Create backup in custom directory
+./scripts/backup.sh /path/to/backups
+
+# Create backup with custom retention (14 days)
+./scripts/backup.sh ./backups 14
+
+# Restore from backup (with automatic pre-restore backup)
+./scripts/restore.sh backups/n8n-backup-20241201-120000.sql.gz
+
+# Restore without creating pre-restore backup (not recommended)
+./scripts/restore.sh backups/n8n-backup.sql.gz --skip-backup
+
+# View backup script options
+./scripts/backup.sh --help
+./scripts/restore.sh --help
+```
+
+**Backup Features:**
+- Automatic backup directory creation
+- Configurable retention policy (default: 7 days)
+- Old backup cleanup
+- Backup validation (size and integrity)
+- Pre-restore safety backup
+- Secure credential handling from Kubernetes secrets
+
 ### Cluster Operations
 
 ```bash
@@ -332,10 +497,6 @@ kubectl top nodes
 ### Application Management
 
 ```bash
-# View application logs
-kubectl logs -f deployment/n8n-simple -n n8n
-kubectl logs -f deployment/postgres-simple -n n8n
-
 # Scale application
 kubectl scale deployment n8n-simple --replicas=3 -n n8n
 
@@ -346,16 +507,16 @@ kubectl set image deployment/n8n-simple n8n=n8nio/n8n:1.0.0 -n n8n
 kubectl rollout restart deployment/n8n-simple -n n8n
 ```
 
-### Database Operations
+### Manual Database Operations
 
 ```bash
-# Connect to PostgreSQL
+# Connect to PostgreSQL (for manual operations)
 kubectl exec -it deployment/postgres-simple -n n8n -- psql -U n8nuser -d n8n
 
-# Backup database
+# Manual backup (use backup.sh script instead)
 kubectl exec deployment/postgres-simple -n n8n -- pg_dump -U n8nuser n8n > n8n-backup-$(date +%Y%m%d).sql
 
-# Restore database
+# Manual restore (use restore.sh script instead)
 kubectl exec -i deployment/postgres-simple -n n8n -- psql -U n8nuser -d n8n < n8n-backup.sql
 ```
 
@@ -470,12 +631,30 @@ kubectl logs deployment/n8n-simple -n n8n > n8n-logs-$(date +%Y%m%d).log
 
 #### 1. Ultra Cost-Optimized Deployment
 ```bash
+# View cost-optimized deployment options
+./scripts/deploy-cost-optimized.sh --help
+
 # Deploy with minimal resources and spot instances
 ./scripts/deploy-cost-optimized.sh
+
+# Deploy to specific region
+REGION=us-east-1 ./scripts/deploy-cost-optimized.sh
 ```
+
+**Features (New in v2.0):**
+- Automatic cluster configuration generation
+- Secure credential handling (no hardcoded passwords)
+- Full validation and error handling
+- Uses Kubernetes secrets for database credentials
+- Clear warnings about non-production use
+
+**Configuration:**
 - **Single t3.small spot instance**: 70% savings on compute
 - **Minimal resource allocation**: Reduced CPU/memory requests
+- **emptyDir storage**: Non-persistent for cost savings
 - **Estimated cost**: $100-110/month globally
+
+**Important:** This deployment is suitable for development/testing only, NOT for production workloads.
 
 #### 2. Scheduled Scaling (Additional 40% savings)
 ```bash
@@ -592,23 +771,68 @@ kubectl autoscale deployment n8n-simple --cpu-percent=70 --min=2 --max=10 -n n8n
 
 ## Cleanup
 
-### Remove n8n Application Only
+The cleanup script now includes comprehensive validation, multiple cleanup modes, and orphaned resource detection.
+
+### Remove n8n Application Only (Keep Cluster)
+
 ```bash
+# Delete only the n8n namespace and resources
+./scripts/cleanup.sh --namespace-only
+
+# Or manually
 kubectl delete namespace n8n
 ```
 
+**Use Case:** When you want to redeploy n8n but keep the EKS cluster infrastructure.
+
 ### Complete Infrastructure Cleanup
+
 ```bash
+# View cleanup options
+./scripts/cleanup.sh --help
+
+# Interactive cleanup (with confirmation)
 ./scripts/cleanup.sh
+
+# Automated cleanup (skip confirmation - use with caution!)
+./scripts/cleanup.sh --yes
+
+# Cleanup with custom settings
+CLUSTER_NAME=my-cluster REGION=us-west-2 ./scripts/cleanup.sh
 ```
 
-### Manual Cleanup
+**Cleanup Features:**
+- Automatic namespace deletion with PVC cleanup
+- EKS cluster removal with all associated resources
+- Orphaned LoadBalancer detection and removal
+- Comprehensive resource verification
+- Two modes: namespace-only or full cleanup
+- Safety confirmations (unless --yes flag used)
+
+### Verification After Cleanup
+
+```bash
+# Verify namespace is deleted
+kubectl get namespace n8n
+
+# Verify cluster is deleted
+aws eks list-clusters --region us-east-1 --profile default
+
+# Check for orphaned resources
+aws elbv2 describe-load-balancers --region us-east-1 --profile default
+```
+
+### Manual Cleanup (If Automated Script Fails)
+
 ```bash
 # Delete EKS cluster (replace with your region and cluster name)
 eksctl delete cluster --region=$REGION --name=$CLUSTER_NAME --profile=$AWS_PROFILE
 
-# Clean up any remaining resources
+# Clean up any remaining CloudFormation stacks
 aws cloudformation list-stacks --region=$REGION --profile=$AWS_PROFILE
+
+# Check and delete orphaned LoadBalancers
+aws elbv2 describe-load-balancers --region=$REGION --profile=$AWS_PROFILE
 ```
 
 ---
@@ -668,14 +892,34 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Version Information
 
+- **Project Version**: 2.0 (Code Quality Release)
 - **n8n Version**: Latest (automatically updated)
 - **PostgreSQL Version**: 15
 - **Kubernetes Version**: 1.32
 - **EKS Platform Version**: Latest
-- **Last Updated**: October 2025
+- **Last Updated**: November 2025
+
+### Changelog
+
+**v2.0 (November 2025)** - Code Quality & Best Practices Release
+- Added comprehensive error handling and validation to all scripts
+- Created shared functions library (`common.sh`)
+- Enhanced backup script with retention policy
+- Added pre-restore backup safety feature
+- Implemented watch mode for monitoring
+- Added follow mode for log streaming
+- Enhanced cleanup with namespace-only mode
+- Improved security: credentials from Kubernetes secrets
+- Added help documentation for all scripts
+- Color-coded output for better UX
+
+**v1.0** - Initial Release
+- Basic deployment scripts
+- Multi-region support
+- Cost-optimized deployment option
 
 ---
 
-**Deployment Type**: Kubernetes Native  
-**License**: MIT License  
+**Deployment Type**: Kubernetes Native
+**License**: MIT License
 **Multi-Region Support**: All AWS Regions
