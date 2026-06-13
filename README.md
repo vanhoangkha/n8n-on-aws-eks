@@ -95,25 +95,12 @@ Internet → AWS NLB → EKS Service → n8n Pod → PostgreSQL Pod
 
 ### Use Cases
 
-**IT Ops can**
-⚡ On-board new employees
-
-![IT Ops Employee Onboarding](images/it-ops-onboarding.png)
-
-**Sec Ops can**
-⚡ Enrich security incident tickets
-
-![Security Operations Incident Enrichment](images/sec-ops-incident-enrichment.png)
-
-**Dev Ops can**
-⚡ Convert natural language into API calls
-
-![DevOps Natural Language to API](images/dev-ops-natural-language-api.png)
-
-**Sales can**
-⚡ Generate customer insights from reviews
-
-![Sales Customer Insights](images/sales-customer-insights.png)
+| Team | Example automation |
+| --- | --- |
+| **IT Ops** | Onboard employees by creating accounts, sending welcome messages, and opening asset requests |
+| **Security Ops** | Enrich incident tickets with threat intelligence, asset context, and owner metadata |
+| **DevOps** | Convert approved requests into API calls for deployment, provisioning, or release workflows |
+| **Sales** | Summarize customer feedback and route high-priority insights to the right owner |
 
 ---
 
@@ -287,9 +274,7 @@ kubectl get service n8n-service-simple -n n8n
 ./scripts/monitor.sh
 ```
 
-![n8n Setup Interface](images/n8n-setup.png)
-
-*n8n owner account setup interface - Configure your admin credentials to get started*
+Create the first owner account from the n8n web UI. Use a strong password and store recovery details in your team's password manager.
 
 ---
 
@@ -364,15 +349,9 @@ Create your first automation workflow:
 6. **Test workflow** using the "Execute Workflow" button
 7. **Save and activate** your workflow
 
-![n8n Workflow Interface](images/n8n-workflow.png)
-
-*n8n workflow builder interface - Visual drag-and-drop workflow creation with multiple nodes and connections*
-
 ### Advanced Workflow Example
 
-![n8n Advanced Workflow](images/n8n-workflow-example.png)
-
-*Example of a more complex n8n workflow with multiple integrations, conditional logic, and data processing nodes*
+A production workflow usually combines a trigger, enrichment steps, branching logic, error handling, and a final action such as ticket update, notification, or API request. Start with a manual trigger, validate the data flow, then switch to a webhook or scheduled trigger once the workflow is stable.
 
 ### Step 4: Security Configuration
 
