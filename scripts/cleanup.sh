@@ -52,7 +52,7 @@ while [ $# -gt 0 ]; do
     shift
 done
 
-print_header "🗑️  n8n Cleanup Script"
+print_header "n8n Cleanup Script"
 
 log_warning "WARNING: This will delete resources!"
 echo "   Cluster: $CLUSTER_NAME"

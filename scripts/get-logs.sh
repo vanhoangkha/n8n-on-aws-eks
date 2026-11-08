@@ -99,19 +99,19 @@ get_service_logs() {
 # Get logs based on service selection
 case "$SERVICE" in
     n8n)
-        get_service_logs "n8n" "app=n8n-simple" "📋 n8n Logs (last $LINES lines)"
+        get_service_logs "n8n" "app=n8n-simple" "n8n Logs (last $LINES lines)"
         ;;
     postgres|postgresql|db)
-        get_service_logs "postgres" "app=postgres-simple" "📋 PostgreSQL Logs (last $LINES lines)"
+        get_service_logs "postgres" "app=postgres-simple" "PostgreSQL Logs (last $LINES lines)"
         ;;
     all)
         log_info "Fetching logs from all services..."
         echo ""
-        get_service_logs "n8n" "app=n8n-simple" "📋 n8n Logs (last $LINES lines)"
+        get_service_logs "n8n" "app=n8n-simple" "n8n Logs (last $LINES lines)"
         echo ""
         print_separator
         echo ""
-        get_service_logs "postgres" "app=postgres-simple" "📋 PostgreSQL Logs (last $LINES lines)"
+        get_service_logs "postgres" "app=postgres-simple" "PostgreSQL Logs (last $LINES lines)"
         ;;
     *)
         error_exit "Unknown service: $SERVICE\n\nValid services: n8n, postgres, all\nUse --help for more information"

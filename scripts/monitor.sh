@@ -56,34 +56,34 @@ fi
 
 # Function to display monitoring information
 display_monitoring_info() {
-    print_header "📊 n8n Monitoring Dashboard"
+    print_header "n8n Monitoring Dashboard"
 
-    echo "🔍 PODS STATUS:"
+    echo "PODS STATUS:"
     print_separator
     kubectl get pods -n "$NAMESPACE" -o wide
 
     echo ""
-    echo "📊 POD DETAILS:"
+    echo "POD DETAILS:"
     print_separator
     for pod in $(kubectl get pods -n "$NAMESPACE" -o jsonpath='{.items[*].metadata.name}'); do
         echo ""
-        echo "📦 $pod"
+        echo "$pod"
         kubectl describe pod "$pod" -n "$NAMESPACE" 2>/dev/null | grep -A 5 "Status:" | head -6 || true
         kubectl get pod "$pod" -n "$NAMESPACE" -o jsonpath='  Restarts: {.status.containerStatuses[0].restartCount}' 2>/dev/null && echo "" || true
     done
 
     echo ""
-    echo "🌐 SERVICES:"
+    echo "SERVICES:"
     print_separator
     kubectl get services -n "$NAMESPACE"
 
     echo ""
-    echo "💾 PERSISTENT VOLUMES:"
+    echo "PERSISTENT VOLUMES:"
     print_separator
     kubectl get pvc -n "$NAMESPACE" 2>/dev/null || echo "No PVCs found"
 
     echo ""
-    echo "📈 RESOURCE USAGE:"
+    echo "RESOURCE USAGE:"
     print_separator
     if kubectl top pods -n "$NAMESPACE" 2>/dev/null; then
         echo ""
@@ -94,12 +94,12 @@ display_monitoring_info() {
     fi
 
     echo ""
-    echo "🔐 RECENT EVENTS:"
+    echo "RECENT EVENTS:"
     print_separator
     kubectl get events -n "$NAMESPACE" --sort-by='.lastTimestamp' 2>/dev/null | tail -10 || echo "No events found"
 
     echo ""
-    echo "🔗 ACCESS URL:"
+    echo "ACCESS URL:"
     print_separator
     URL=$(kubectl get service n8n-service-simple -n "$NAMESPACE" -o jsonpath='{.status.loadBalancer.ingress[0].hostname}' 2>/dev/null)
     if [ -n "$URL" ]; then
@@ -110,7 +110,7 @@ display_monitoring_info() {
     fi
 
     echo ""
-    echo "📋 QUICK COMMANDS:"
+    echo "QUICK COMMANDS:"
     print_separator
     echo "  View logs:       ./scripts/get-logs.sh n8n --follow"
     echo "  Restart:         kubectl rollout restart deployment/n8n-simple -n $NAMESPACE"

@@ -27,7 +27,7 @@ if [ "${1:-}" = "-h" ] || [ "${1:-}" = "--help" ]; then
     exit 0
 fi
 
-print_header "📦 n8n Database Backup"
+print_header "n8n Database Backup"
 
 # Check prerequisites
 log_info "Checking prerequisites..."
