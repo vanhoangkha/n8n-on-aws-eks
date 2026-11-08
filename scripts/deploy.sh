@@ -32,7 +32,7 @@ if [ "${1:-}" = "-h" ] || [ "${1:-}" = "--help" ]; then
     exit 0
 fi
 
-print_header "🚀 n8n EKS Deployment"
+print_header "n8n EKS Deployment"
 
 log_info "Configuration:"
 echo "   Cluster: $CLUSTER_NAME"

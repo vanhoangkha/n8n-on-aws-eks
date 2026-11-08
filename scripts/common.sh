@@ -15,15 +15,15 @@ log_info() {
 }
 
 log_success() {
-    echo -e "${GREEN}✅${NC} $*"
+    echo -e "${GREEN}${NC} $*"
 }
 
 log_warning() {
-    echo -e "${YELLOW}⚠️${NC}  $*"
+    echo -e "${YELLOW}${NC}  $*"
 }
 
 log_error() {
-    echo -e "${RED}❌${NC} $*" >&2
+    echo -e "${RED}${NC} $*" >&2
 }
 
 # Error handling

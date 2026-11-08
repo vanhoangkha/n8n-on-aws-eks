@@ -56,7 +56,7 @@ if [ ! -s "$BACKUP_FILE" ]; then
     error_exit "Backup file is empty: $BACKUP_FILE"
 fi
 
-print_header "📦 n8n Database Restore"
+print_header "n8n Database Restore"
 
 log_warning "WARNING: This will replace the current database!"
 echo "   Backup file: $BACKUP_FILE"

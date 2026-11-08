@@ -32,7 +32,7 @@ if [ "${1:-}" = "-h" ] || [ "${1:-}" = "--help" ]; then
     exit 0
 fi
 
-print_header "🚀 Cost-Optimized n8n EKS Deployment"
+print_header "Cost-Optimized n8n EKS Deployment"
 
 log_warning "This deployment uses spot instances and minimal resources"
 log_warning "Suitable for development/testing only, NOT for production use"
